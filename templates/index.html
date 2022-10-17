@@ -1,0 +1,90 @@
+<html>
+  <head>
+    <title>Video Streaming Demonstration</title>
+  </head>
+  <body>
+    <h1 id="m-input"></h1>
+
+    <style>
+      .p {
+        color: green;
+      }
+    </style>
+
+    <h1 style="font-size: 50px" id="text"></h1>
+    <h1 id="char"></h1>
+    <script defer>
+      const f = document.getElementById("morse");
+      const m = document.getElementById("m-input");
+      const c = document.getElementById("char");
+
+      const morse = {
+        ".-": "A",
+        "-...": "B",
+        "-.-.": "C",
+        "-..": "D",
+        ".": "E",
+        "..-.": "F",
+        "--.": "G",
+        "....": "H",
+        "..": "I",
+        ".---": "J",
+        "-.-": "K",
+        ".-..": "L",
+        "--": "M",
+        "-.": "N",
+        "---": "O",
+        ".--.": "P",
+        "--.-": "Q",
+        ".-.": "R",
+        "...": "S",
+        "-": "T",
+        "..-": "U",
+        "...-": "V",
+        ".--": "W",
+        "-..-": "X",
+        "-.--": "Y",
+        "--..": "Z",
+      };
+
+      window.addEventListener("click", (e) => {
+        if (e.button === 0) {
+          if (morse[m.innerHTML]) {
+            c.innerHTML += morse[m.innerHTML];
+          }
+          m.innerHTML = "";
+        }
+      });
+      window.addEventListener("keypress", (e) => {
+        if (m.innerHTML.length > 0 && e.key === " ") {
+          m.innerHTML = m.innerHTML.slice(0, m.innerHTML.length - 1);
+        }
+        if (m.innerHTML.length > 0 && e.key === "z") {
+          c.innerHTML = c.innerHTML.slice(0, c.innerHTML.length - 1);
+        }
+      });
+
+      var p = document.querySelector("#text");
+
+      let cur = "";
+      (async () => {
+        setInterval(() => {
+          fetch("{{ url_for('camera_feed') }}").then((res) =>
+            res.text().then((t) => {
+              p.innerHTML = t;
+              console.log(t);
+              cur = t;
+            })
+          );
+        }, 100);
+      })();
+
+      (async () => {
+        setInterval(() => {
+          m.innerHTML += cur;
+          cur = "";
+        }, 1000);
+      })();
+    </script>
+  </body>
+</html>
