@@ -1,40 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    <link
-      rel="shortcut icon"
-      href="/static/favicon.0903abaa.ico"
-      type="image/x-icon"
+    <title>Video Streaming Demonstration</title>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval' http://www.google.com"
     />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Sensa Makara | Gemastik IOT</title>
-    <script type="module" crossorigin src="/static/index.0f47519f.js"></script>
-    <link rel="stylesheet" href="/static/index.230fa24d.css" />
   </head>
   <body>
-    <div class="loader">
-      <img
-        src="/static/makara.png"
-        alt="Makara Universitas Indonesia"
-        width="150px"
-      />
-    </div>
+    <h1 id="m-input"></h1>
 
-    <div class="content">
-      <h1 id="m-input"></h1>
-      <h1 id="m-output"></h1>
-      <input class="t-input" id="char" type="text" />
-      <ul class="suggestions"></ul>
-    </div>
+    <style>
+      .p {
+        color: green;
+      }
+    </style>
 
-    <footer>Made by Sensa Makara team at Universitas Indonesia</footer>
-
+    <h1 style="font-size: 50px" id="text"></h1>
+    <h1 id="char"></h1>
     <script defer>
       const f = document.getElementById("morse");
       const m = document.getElementById("m-input");
       const c = document.getElementById("char");
-      const o = document.getElementById("m-output");
 
       const morse = {
         ".-": "A",
@@ -63,17 +49,14 @@
         "-..-": "X",
         "-.--": "Y",
         "--..": "Z",
-        "----": " ",
       };
 
       window.addEventListener("click", (e) => {
         if (e.button === 0) {
           if (morse[m.innerHTML]) {
-            c.value += morse[m.innerHTML];
+            c.innerHTML += morse[m.innerHTML];
           }
           m.innerHTML = "";
-          const ev = new Event("input");
-          c.dispatchEvent(ev);
         }
       });
       window.addEventListener("keypress", (e) => {
@@ -81,19 +64,19 @@
           m.innerHTML = m.innerHTML.slice(0, m.innerHTML.length - 1);
         }
         if (m.innerHTML.length > 0 && e.key === "z") {
-          c.value = c.value.slice(0, c.value.length - 1);
+          c.innerHTML = c.innerHTML.slice(0, c.innerHTML.length - 1);
         }
       });
 
-      // var p = document.querySelector("#text");
+      var p = document.querySelector("#text");
 
       let cur = "";
       (async () => {
         setInterval(async () => {
           const res = await fetch("{{ url_for('camera_feed') }}");
           const t = await res.text();
-          // p.innerHTML = t;
-          // console.log(t);
+          p.innerHTML = t;
+          console.log(t);
           cur = t;
         }, 100);
       })();
@@ -101,11 +84,6 @@
       (async () => {
         setInterval(() => {
           m.innerHTML += cur;
-          if (morse[m.innerHTML]) {
-            o.innerHTML = morse[m.innerHTML];
-          } else {
-            o.innerHTML = "<unknown>";
-          }
           cur = "";
         }, 1000);
       })();

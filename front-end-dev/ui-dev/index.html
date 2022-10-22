@@ -2,23 +2,13 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link
-      rel="shortcut icon"
-      href="/static/favicon.0903abaa.ico"
-      type="image/x-icon"
-    />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sensa Makara | Gemastik IOT</title>
-    <script type="module" crossorigin src="/static/index.0f47519f.js"></script>
-    <link rel="stylesheet" href="/static/index.230fa24d.css" />
   </head>
   <body>
     <div class="loader">
-      <img
-        src="/static/makara.png"
-        alt="Makara Universitas Indonesia"
-        width="150px"
-      />
+      <img src="/makara.png" alt="Makara Universitas Indonesia" width="150px" />
     </div>
 
     <div class="content">
@@ -30,6 +20,7 @@
 
     <footer>Made by Sensa Makara team at Universitas Indonesia</footer>
 
+    <script type="module" src="/main.js"></script>
     <script defer>
       const f = document.getElementById("morse");
       const m = document.getElementById("m-input");
@@ -72,8 +63,6 @@
             c.value += morse[m.innerHTML];
           }
           m.innerHTML = "";
-          const ev = new Event("input");
-          c.dispatchEvent(ev);
         }
       });
       window.addEventListener("keypress", (e) => {
@@ -85,15 +74,15 @@
         }
       });
 
-      // var p = document.querySelector("#text");
+      var p = document.querySelector("#text");
 
       let cur = "";
       (async () => {
         setInterval(async () => {
           const res = await fetch("{{ url_for('camera_feed') }}");
           const t = await res.text();
-          // p.innerHTML = t;
-          // console.log(t);
+          p.innerHTML = t;
+          console.log(t);
           cur = t;
         }, 100);
       })();
@@ -101,8 +90,8 @@
       (async () => {
         setInterval(() => {
           m.innerHTML += cur;
-          if (morse[m.innerHTML]) {
-            o.innerHTML = morse[m.innerHTML];
+          if (morse[cur]) {
+            o.innerHTML = morse[cur];
           } else {
             o.innerHTML = "<unknown>";
           }

@@ -3,7 +3,6 @@ import time
 import cv2
 from base_camera import BaseCamera
 import mediapipe as mp
-from fuzzyfinder import fuzzyfinder
 
 
 class Camera(BaseCamera):
@@ -12,20 +11,20 @@ class Camera(BaseCamera):
 
     mp_draw = mp.solutions.drawing_utils
     mp_facemesh = mp.solutions.face_mesh
-    facemesh = mp_facemesh.FaceMesh(max_num_faces=2)
+    facemesh = mp_facemesh.FaceMesh(max_num_faces=1)
     draw_spec = mp_draw.DrawingSpec(thickness=1, circle_radius=2)
 
     ear1prev = []
     ear2prev = []
     wordArray = []
-    isLong = False
-    blinkedFor = 0
-    notBlinkedFor = 0
+    long_blink = False
+    blink_timer = 0
+    not_blink_timer = 0
     timer = 0
-    wasBlinked = False
-    letterArray = ""
-    letterIs = ""
-    w = ""
+    has_blinked = False
+    morse_code = ""
+    DOT_THRESHOLD = 0.05
+    LINE_THRESHOLD = 0.15
 
     def __init__(self):
         if os.environ.get('OPENCV_CAMERA_SOURCE'):
@@ -80,34 +79,37 @@ class Camera(BaseCamera):
 
                     if len(Camera.ear1prev) > 10:
                         Camera.ear1prev[count] = ear1
-                        Camera.isLong = True
+                        Camera.long_blink = True
                     else:
                         Camera.ear1prev.append(ear1)
 
                     if len(Camera.ear2prev) > 10:
                         Camera.ear2prev[count] = ear2
-                        Camera.isLong = True
+                        Camera.long_blink = True
                     else:
                         Camera.ear2prev.append(ear2)
 
-                    if Camera.isLong:
-                        if ((Camera.ear1prev[abs(count-9)]*0.70 > ear1) and (Camera.ear2prev[abs(count-9)]*0.70 > ear2)):
+                    if Camera.long_blink:
+                        if ((Camera.ear1prev[abs(count-9)]*0.65 > ear1) and (Camera.ear2prev[abs(count-9)]*0.65 > ear2)):
                             # print("blink")
-                            wasBlinked = True
-                            Camera.blinkedFor = Camera.blinkedFor+1
+                            Camera.wasBlinked = True
+                            Camera.blink_timer = Camera.blink_timer+1
                         else:
-                            if (Camera.blinkedFor > (fps/2)):
+                            if (Camera.blink_timer > (fps*Camera.LINE_THRESHOLD)):
                                 # print("LONG blink")
-                                Camera.letterArray = Camera.letterArray + "-"
+                                Camera.morse_code = Camera.morse_code + "-"
                                 yield "-"
-                                Camera.blinkedFor = 0
+                                Camera.blink_timer = 0
 
-                            elif (Camera.blinkedFor > int(fps/4)):
+                            elif (Camera.blink_timer > fps*Camera.DOT_THRESHOLD):
                                 # print("SHORT blink")
-                                Camera.letterArray = Camera.letterArray + "."
+                                Camera.morse_code = Camera.morse_code + "."
                                 yield "."
-                                Camera.blinkedFor = 0
+                                Camera.blink_timer = 0
 
                             else:
-
-                                Camera.notBlinkedFor = Camera.notBlinkedFor+1
+                                if (Camera.not_blink_timer > fps):
+                                    Camera.morse_code = ""
+                                    Camera.not_blink_timer = 0
+                                    yield ""
+                                Camera.not_blink_timer = Camera.not_blink_timer+1

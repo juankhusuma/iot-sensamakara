@@ -1,0 +1,20 @@
+{
+  "name": "ui-dev",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^3.1.0"
+  },
+  "dependencies": {
+    "@types/jquery": "^3.5.14",
+    "fuse.js": "^6.6.2",
+    "jquery": "^3.6.1",
+    "text-to-speech-js": "^1.1.10"
+  }
+}
