@@ -14,14 +14,15 @@
     <div class="content">
       <h1 id="m-input"></h1>
       <h1 id="m-output"></h1>
-      <input class="t-input" id="char" type="text" />
+      <input class="t-input" type="text" />
+      <div id="char"></div>
       <ul class="suggestions"></ul>
     </div>
 
     <footer>Made by Sensa Makara team at Universitas Indonesia</footer>
 
     <script type="module" src="/main.js"></script>
-    <script defer>
+    <!-- <script defer>
       const f = document.getElementById("morse");
       const m = document.getElementById("m-input");
       const c = document.getElementById("char");
@@ -74,14 +75,14 @@
         }
       });
 
-      var p = document.querySelector("#text");
+      // var p = document.querySelector("#text");
 
       let cur = "";
       (async () => {
         setInterval(async () => {
           const res = await fetch("{{ url_for('camera_feed') }}");
           const t = await res.text();
-          p.innerHTML = t;
+          // p.innerHTML = t;
           console.log(t);
           cur = t;
         }, 100);
@@ -97,7 +98,7 @@
           }
           cur = "";
         }, 1000);
-      })();
+      })(); -->
     </script>
   </body>
 </html>

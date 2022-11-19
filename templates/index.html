@@ -9,7 +9,7 @@
     />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Sensa Makara | Gemastik IOT</title>
-    <script type="module" crossorigin src="/static/index.0f47519f.js"></script>
+    <script type="module" crossorigin src="/static/index.cce16f23.js"></script>
     <link rel="stylesheet" href="/static/index.230fa24d.css" />
   </head>
   <body>
@@ -24,7 +24,8 @@
     <div class="content">
       <h1 id="m-input"></h1>
       <h1 id="m-output"></h1>
-      <input class="t-input" id="char" type="text" />
+      <input class="t-input" type="text" />
+      <div id="char"></div>
       <ul class="suggestions"></ul>
     </div>
 
@@ -35,6 +36,7 @@
       const m = document.getElementById("m-input");
       const c = document.getElementById("char");
       const o = document.getElementById("m-output");
+      const t = document.querySelector(".t-input");
 
       const morse = {
         ".-": "A",
@@ -69,16 +71,16 @@
       window.addEventListener("click", (e) => {
         if (e.button === 0) {
           if (morse[m.innerHTML]) {
-            c.value += morse[m.innerHTML];
+            t.value += morse[m.innerHTML];
           }
           m.innerHTML = "";
           const ev = new Event("input");
-          c.dispatchEvent(ev);
+          t.dispatchEvent(ev);
         }
       });
       window.addEventListener("keypress", (e) => {
         if (m.innerHTML.length > 0 && e.key === " ") {
-          m.innerHTML = m.innerHTML.slice(0, m.innerHTML.length - 1);
+          t.value = t.value.slice(0, m.innerHTML.length - 1);
         }
         if (m.innerHTML.length > 0 && e.key === "z") {
           c.value = c.value.slice(0, c.value.length - 1);
@@ -107,7 +109,7 @@
             o.innerHTML = "<unknown>";
           }
           cur = "";
-        }, 1000);
+        }, 600);
       })();
     </script>
   </body>
